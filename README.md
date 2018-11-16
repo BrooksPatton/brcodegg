@@ -31,6 +31,16 @@ This is the primary repo for my battle royale coding game
   * [ ] Node.js
 * [ ] Calling multiple docker containers from within a rust app
 
+#### General Development
+
+* [ ] As a developer, I would like to see a contribution guide so that I know how to help
+  * [ ] Near the top of the README
+  * [ ] Include a contributors section
+  * [ ] Create tags for different kinds of issues
+* [ ] As a devoloper, I would like to see a Code of Conduct so that I know how to conduct myself in this community
+  * [ ] Find one from a organization that I like
+  * [ ] Make it not sound legal
+
 #### Front End
 
 * [ ] As a possible player, I want to see what game I'm on
