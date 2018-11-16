@@ -3,7 +3,35 @@ This is the primary repo for my battle royale coding game
 
 ## Player Stories
 
-### Front End
+### Doing
+
+### Done
+
+### Backlog
+
+#### Spike Research
+
+* [ ] Architecture
+  * [ ] Authentication
+  * [ ] Separate API and web server or not?
+* [ ] Technology to use for Front end
+  * [ ] React
+  * [ ] Vanilla.js
+  * [ ] Replay technology
+    * [ ] Divs and vanilla
+    * [ ] Canvas
+    * [ ] P5js
+* [ ] Technology to use for the Api
+  * [ ] Actix-web
+  * [ ] Database to use
+  * [ ] Oauth with Github and a rust server
+* [ ] How to be GDPR compliance
+* [ ] Create a bot
+  * [ ] Python
+  * [ ] Node.js
+* [ ] Calling multiple docker containers from within a rust app
+
+#### Front End
 
 * [ ] As a possible player, I want to see what game I'm on
   * [ ] Top nav-bar
@@ -37,7 +65,7 @@ This is the primary repo for my battle royale coding game
   * [ ] API endpoints for the bot
   * [ ] Example code using each of the endpoints
 
-### Game Engine
+#### Game Engine
 
 * [ ] As a bot, I want to know the state of the game when its my turn
   * [ ] Input via standard in
@@ -49,3 +77,14 @@ This is the primary repo for my battle royale coding game
   * [ ] my inventory
   * [ ] speed
   * [ ] can I fire a bullet?
+  * [ ] success and error codes for previously taken actions
+* [ ] As a bot, I want to tell the game what my actions are every turn
+  * [ ] output move action
+  * [ ] output where to fire my bullet
+  * [ ] As a bot, I want to live in a container so to that I can save my state
+  * [ ] As a bot, I want my container to be locked down so that I cannot break out
+* [ ] As a player, I want to know how my bot did
+  * [ ] Record the results to the database
+  * [ ] Save the game replay to the database
+
+#### Future (not doing)
