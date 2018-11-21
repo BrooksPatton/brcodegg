@@ -17,13 +17,15 @@ This is the primary repo for my battle royale coding game
 * [x] Technology to use for Front end
   * [x] React (React as I want to improve my skills with it)
   * [x] Vanilla.js
-  * [ ] Replay technology 
-    * [ ] Divs and vanilla
-    * [ ] Canvas
-    * [ ] P5js
+  * [x] Replay technology 
+    * [x] Divs and vanilla
+    * [o] Canvas
+    * [o] P5js
 * [-] Technology to use for the Api
   * [ ] Actix-web
   * [ ] Database to use
+    * [ ] Postgres
+    * [ ] MongoDB
   * [x] Oauth with Github and a rust server
 * [ ] How to be GDPR compliance
 * [ ] Create a bot
