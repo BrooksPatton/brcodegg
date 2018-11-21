@@ -22,7 +22,7 @@ This is the primary repo for my battle royale coding game
     * [o] Canvas
     * [o] P5js
 * [-] Technology to use for the Api
-  * [ ] Actix-web
+  * [ ] Actix-web (putting route logic in modules / library and testing)
   * [ ] Database to use
     * [ ] Postgres
     * [ ] MongoDB
