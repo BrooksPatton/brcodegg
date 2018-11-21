@@ -11,20 +11,20 @@ This is the primary repo for my battle royale coding game
 
 #### Spike Research
 
-* [ ] Architecture
-  * [ ] Authentication
-  * [ ] Separate API and web server or not?
-* [ ] Technology to use for Front end
-  * [ ] React
-  * [ ] Vanilla.js
-  * [ ] Replay technology
+* [x] Architecture
+  * [x] Authentication (oauth with github)
+  * [x] Separate API and web server or not? (together)
+* [x] Technology to use for Front end
+  * [x] React (React as I want to improve my skills with it)
+  * [x] Vanilla.js
+  * [ ] Replay technology 
     * [ ] Divs and vanilla
     * [ ] Canvas
     * [ ] P5js
-* [ ] Technology to use for the Api
+* [-] Technology to use for the Api
   * [ ] Actix-web
   * [ ] Database to use
-  * [ ] Oauth with Github and a rust server
+  * [x] Oauth with Github and a rust server
 * [ ] How to be GDPR compliance
 * [ ] Create a bot
   * [ ] Python
