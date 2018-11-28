@@ -1,0 +1,7 @@
+[package]
+name = "brcodegg"
+version = "0.1.0"
+authors = ["Brooks Patton <brooks@brookzerker.com>"]
+
+[dependencies]
+ggez = "0.4.4"

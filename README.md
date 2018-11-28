@@ -15,23 +15,23 @@ This is the primary repo for my battle royale coding game
   * [x] Authentication (oauth with github)
   * [x] Separate API and web server or not? (together)
 * [x] Technology to use for Front end
-  * [x] React (React as I want to improve my skills with it)
-  * [x] Vanilla.js
+  * [o] React
+  * [x] Vanilla.js (changed my mind, lets focus on learning rust this go around)
   * [x] Replay technology 
     * [x] Divs and vanilla
     * [o] Canvas
     * [o] P5js
 * [-] Technology to use for the Api
-  * [ ] Actix-web (putting route logic in modules / library and testing)
-  * [ ] Database to use
-    * [ ] Postgres
-    * [ ] MongoDB
+  * [x] Actix-web (putting route logic in modules / library and testing)
+  * [-] Database to use
+    * [x] Postgres
+    * [o] MongoDB
   * [x] Oauth with Github and a rust server
 * [ ] How to be GDPR compliance
 * [ ] Create a bot
   * [ ] Python
   * [ ] Node.js
-* [ ] Calling multiple docker containers from within a rust app
+* [ ] C alling multiple docker containers from within a rust app
 
 #### General Development
 
