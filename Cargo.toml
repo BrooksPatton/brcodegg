@@ -5,3 +5,4 @@ authors = ["Brooks Patton <brooks@brookzerker.com>"]
 
 [dependencies]
 ggez = "0.4.4"
+rand = "0.6.1"

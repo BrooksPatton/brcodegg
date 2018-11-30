@@ -1,19 +1,36 @@
 extern crate ggez;
+extern crate rand;
+
+mod bot;
 
 use ggez::event::{EventHandler};
 use ggez::{GameResult, Context, graphics};
-use ggez::graphics::{DrawMode, Point2};
+use bot::Bot;
+use rand::{thread_rng, Rng};
 
 pub struct MainState {
     pub width: f32,
-    pub height:f32
+    pub height:f32,
+    pub bots: Vec<Bot>
 }
 
 impl MainState {
-    pub fn new(width: f32, height: f32) -> MainState {
+    pub fn new(width: f32, height: f32, bots_to_create: u8) -> MainState {
+        let mut bots = Vec::new();
+        let mut rng = thread_rng();
+
+        for _ in 0..bots_to_create {
+            let x: f32 = rng.gen_range(0.0, width);
+            let y: f32 = rng.gen_range(0.0, height);
+            let bot = Bot::new(x, y);
+
+            bots.push(bot);
+        }
+
         MainState {
             width,
-            height
+            height,
+            bots
         }
     }
 }
@@ -24,9 +41,10 @@ impl EventHandler for MainState {
     }
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
-        let location = Point2::new(150.0, 150.0);
+        for bot in &mut self.bots {
+            bot.draw(ctx)?;
+        }
 
-        graphics::circle(ctx, DrawMode::Fill, location, 100.0, 0.1)?;
         graphics::present(ctx);
         Ok(())
     }
@@ -36,8 +54,9 @@ impl EventHandler for MainState {
 
 #[test]
 fn main_state_new() {
-    let main_state = MainState::new(55.0, 42.0);
+    let main_state = MainState::new(55.0, 42.0, 5);
 
     assert_eq!(main_state.width, 55.0);
     assert_eq!(main_state.height, 42.0);
+    assert_eq!(main_state.bots.len(), 5);
 }
