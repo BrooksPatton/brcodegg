@@ -36,11 +36,17 @@ impl MainState {
 }
 
 impl EventHandler for MainState {
-    fn update(&mut self, _ctx: &mut Context) -> GameResult<()> {
+    fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
+        for bot in &mut self.bots {
+            bot.update(ctx)?;
+        }
+
         Ok(())
     }
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
+        graphics::clear(ctx);
+        
         for bot in &mut self.bots {
             bot.draw(ctx)?;
         }
