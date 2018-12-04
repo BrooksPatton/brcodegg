@@ -2,11 +2,11 @@ extern crate ggez;
 extern crate rand;
 
 mod bot;
+mod point;
 
 use ggez::event::{EventHandler};
 use ggez::{GameResult, Context, graphics};
 use bot::Bot;
-use rand::{thread_rng, Rng};
 
 pub struct MainState {
     pub width: f32,
@@ -17,12 +17,10 @@ pub struct MainState {
 impl MainState {
     pub fn new(width: f32, height: f32, bots_to_create: u8) -> MainState {
         let mut bots = Vec::new();
-        let mut rng = thread_rng();
 
         for _ in 0..bots_to_create {
-            let x: f32 = rng.gen_range(0.0, width);
-            let y: f32 = rng.gen_range(0.0, height);
-            let bot = Bot::new(x, y);
+            
+            let bot = Bot::new(width, height);
 
             bots.push(bot);
         }
