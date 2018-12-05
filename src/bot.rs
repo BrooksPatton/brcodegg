@@ -42,11 +42,26 @@ impl Bot {
         let random_location = Point::new(random_x, random_y);
 
         self.move_bot(random_location);
+        self.keep_in_arena();
         Ok(())
     }
 
     fn move_bot(&mut self, distance: Point) {
         self.location += distance;
+    }
+
+    fn keep_in_arena(&mut self) {
+        if (self.location.y - self.radius) < 0.0 {
+            self.location.y = self.radius;
+        } else if (self.location.y + self.radius) > self.arena_height {
+            self.location.y = self.arena_height - self.radius;
+        }
+
+        if (self.location.x - self.radius) < 0.0 {
+            self.location.x = self.radius;
+        } else if (self.location.x + self.radius) > self.arena_width {
+            self.location.x = self.arena_width - self.radius;
+        }
     }
 }
 
