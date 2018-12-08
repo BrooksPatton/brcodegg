@@ -11,6 +11,10 @@ use std::thread;
 use self::crossbeam_channel::{bounded, Receiver, Sender};
 use std::process::Command;
 use std::str;
+use bot_move::BotMove;
+use game_state::GameState;
+use std::fs::File;
+use std::io::{Read, Write};
 
 pub struct Bot {
     pub location: Point,
@@ -28,13 +32,21 @@ impl Bot {
         let thread_sender = sender.clone();
         let thread_receiver = receiver.clone();
         let location = Point::new(0.0, 0.0);
+        let game_state_location = Point::new(location.x, location.y);
 
         thread::spawn(move || {
+            let game_state = GameState::new(arena_width, arena_height, game_state_location);
+            let stringified_game_state = serde_json::to_string(&game_state).unwrap();
+
+            save_to_file(stringified_game_state.clone()).unwrap();
+
             let output = Command::new("sh")
                 .arg("-c")
-                .arg("node bot.js")
+                .arg(format!("node bot.js '{}'", stringified_game_state))
                 .output()
                 .expect("failed to execute process");
+
+            println!("{:?}", output);
 
             let json: BotMove = serde_json::from_slice(&output.stdout).unwrap();
             let x = &json.x;
@@ -95,10 +107,11 @@ impl Bot {
     }
 }
 
-#[derive(Serialize, Deserialize)]
-struct BotMove {
-    x: f32,
-    y: f32
+fn save_to_file(content: String) -> Result<(), std::io::Error> {
+    let mut file = File::create("game_state.json")?;
+
+    file.write(&content.into_bytes())?;
+    Ok(())
 }
 
 #[cfg(test)]
@@ -106,8 +119,8 @@ struct BotMove {
 fn new_bot() {
     let bot = Bot::new(300.0, 300.0);
 
-    assert!(bot.location.x > 0.0 && bot.location.x < 300.0);
-    assert!(bot.location.y > 0.0 && bot.location.y < 300.0);
+    assert!(bot.location.x >= 0.0 && bot.location.x <= 300.0);
+    assert!(bot.location.y >= 0.0 && bot.location.y <= 300.0);
     assert_eq!(bot.radius, 25.0);
     assert_eq!(bot.arena_width, 300.0);
     assert_eq!(bot.arena_height, 300.0);
@@ -133,4 +146,18 @@ fn keep_in_arena() {
     bot.move_bot(distance_to_move);
     bot.keep_in_arena();
     assert_eq!(bot.location.x, 300.0 - bot.radius);
+}
+
+#[test]
+fn save_to_file_test() {
+    let content = String::from("meow");
+
+    save_to_file(content).unwrap();
+
+    let mut file = File::open("game_state.json").unwrap();
+    let mut file_contents = String::new();
+
+    file.read_to_string(&mut file_contents).unwrap();
+
+    assert_eq!(file_contents, "meow");
 }
