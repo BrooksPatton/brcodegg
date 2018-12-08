@@ -1,31 +1,60 @@
-extern crate rand;
+extern crate crossbeam_channel;
+extern crate serde_json;
+extern crate serde;
 
 use ggez::graphics::{DrawMode};
 use ggez::{graphics};
 use ggez::{Context, GameResult};
 use rand::{thread_rng, Rng};
 use point::Point;
+use std::thread;
+use self::crossbeam_channel::{bounded, Receiver, Sender};
+use std::process::Command;
+use std::str;
 
 pub struct Bot {
     pub location: Point,
     radius: f32,
     arena_width: f32,
-    arena_height: f32
+    arena_height: f32,
+    thread_receiver: Receiver<Point>,
+    thread_sender: Sender<Point>
 }
 
 impl Bot {
     pub fn new(arena_width: f32, arena_height: f32) -> Bot {
-        let mut rng = thread_rng();
-        let x: f32 = rng.gen_range(0.0, arena_width);
-        let y: f32 = rng.gen_range(0.0, arena_height);
-        let location = Point::new(x, y);
         let radius = 25.0;
+        let (sender, receiver) = bounded(1);
+        let thread_sender = sender.clone();
+        let thread_receiver = receiver.clone();
+        let location = Point::new(0.0, 0.0);
+
+        thread::spawn(move || {
+            let output = Command::new("sh")
+                .arg("-c")
+                .arg("node bot.js")
+                .output()
+                .expect("failed to execute process");
+
+            let json: BotMove = serde_json::from_slice(&output.stdout).unwrap();
+            let x = &json.x;
+            let y = &json.y;
+            let bot_location = Point::new(*x, *y);
+
+            loop {
+                let point = Point::new(bot_location.x, bot_location.y);
+
+                sender.send(point).unwrap();
+            }
+        });
 
         Bot {
             location,
             radius,
             arena_width,
-            arena_height
+            arena_height,
+            thread_receiver,
+            thread_sender
         }
     }
 
@@ -36,12 +65,13 @@ impl Bot {
     }
 
     pub fn update(&mut self, _context: &mut Context) -> GameResult<()> {
-        let mut rng = thread_rng();
-        let random_x = rng.gen_range(-10.0, 10.0);
-        let random_y = rng.gen_range(-10.0, 10.0);
-        let random_location = Point::new(random_x, random_y);
+        // let mut rng = thread_rng();
+        // let random_x = rng.gen_range(-10.0, 10.0);
+        // let random_y = rng.gen_range(-10.0, 10.0);
+        // let random_location = Point::new(random_x, random_y);
+        self.location = self.thread_receiver.recv().unwrap();
 
-        self.move_bot(random_location);
+        // self.move_bot(random_location);
         self.keep_in_arena();
         Ok(())
     }
@@ -63,6 +93,12 @@ impl Bot {
             self.location.x = self.arena_width - self.radius;
         }
     }
+}
+
+#[derive(Serialize, Deserialize)]
+struct BotMove {
+    x: f32,
+    y: f32
 }
 
 #[cfg(test)]

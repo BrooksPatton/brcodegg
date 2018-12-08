@@ -1,6 +1,9 @@
 extern crate ggez;
 extern crate rand;
 
+#[macro_use]
+extern crate serde_derive;
+
 mod bot;
 mod point;
 

@@ -6,3 +6,7 @@ authors = ["Brooks Patton <brooks@brookzerker.com>"]
 [dependencies]
 ggez = "0.4.4"
 rand = "0.6.1"
+crossbeam-channel = "0.3.2"
+serde_json = "1.0.33"
+serde = "1.0.81"
+serde_derive = "1.0.81"
