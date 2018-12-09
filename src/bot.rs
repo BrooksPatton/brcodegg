@@ -43,7 +43,7 @@ impl Bot {
     pub fn update(&mut self, _context: &mut Context) -> GameResult<()> {
         let serialized_state_for_bot = self.serialize_data().unwrap();
         let new_location = self.run_bot(serialized_state_for_bot).unwrap();
-        
+
         self.location = new_location;
         self.keep_in_arena();
         Ok(())
@@ -79,8 +79,6 @@ impl Bot {
             .arg(format!("node test_bot.js '{}'", json))
             .output()
             .unwrap();
-        
-        println!("result : {:?}", result);
 
         let location: Point = serde_json::from_slice(&result.stdout)?;
 
