@@ -1,8 +1,8 @@
 const gameState = JSON.parse(process.argv[2])
 
 const newLocation = {
-    x: gameState.current_location_x,
-    y: gameState.current_location_y
+    x: gameState.location.x,
+    y: gameState.location.y
 }
 
 newLocation.x++;

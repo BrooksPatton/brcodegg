@@ -41,9 +41,10 @@ impl Bot {
     }
 
     pub fn update(&mut self, _context: &mut Context) -> GameResult<()> {
-        let serialized_state_for_bot = self.serialize_data()?;
-        // let new_location = self.run_bot(serialized_state_for_bot)?;
-        // self.location = new_location;
+        let serialized_state_for_bot = self.serialize_data().unwrap();
+        let new_location = self.run_bot(serialized_state_for_bot).unwrap();
+        
+        self.location = new_location;
         self.keep_in_arena();
         Ok(())
     }
@@ -70,6 +71,20 @@ impl Bot {
         let result = serde_json::to_string(self)?;
 
         Ok(result)
+    }
+
+    fn run_bot(&self, json: String) -> Result<Point, serde_json::Error> {
+        let result = Command::new("sh")
+            .arg("-c")
+            .arg(format!("node test_bot.js '{}'", json))
+            .output()
+            .unwrap();
+        
+        println!("result : {:?}", result);
+
+        let location: Point = serde_json::from_slice(&result.stdout)?;
+
+        Ok(location)
     }
 }
 
@@ -135,4 +150,14 @@ fn serialize_state() {
     let json = "{\"location\":{\"x\":50.0,\"y\":50.0},\"radius\":25.0,\"arena_width\":100.0,\"arena_height\":100.0}";
 
     assert_eq!(serialized_data, json);
+}
+
+#[test]
+fn run_bot() {
+    let bot = Bot::new(100.0, 100.0);
+    let serialized_data = bot.serialize_data().unwrap();
+    let new_location = bot.run_bot(serialized_data).unwrap();
+    let expected_point = Point::new(51.0, 51.0);
+
+    assert_eq!(new_location, expected_point);
 }
