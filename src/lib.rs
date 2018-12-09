@@ -7,7 +7,6 @@ extern crate serde_derive;
 mod bot;
 mod point;
 mod bot_move;
-mod game_state;
 
 use ggez::event::{EventHandler};
 use ggez::{GameResult, Context, graphics};

@@ -10,10 +10,10 @@ use std::thread;
 use std::process::Command;
 use std::str;
 use bot_move::BotMove;
-use game_state::GameState;
 use std::fs::File;
 use std::io::{Read, Write};
 
+#[derive(Serialize, Deserialize)]
 pub struct Bot {
     pub location: Point,
     radius: f32,
@@ -41,6 +41,9 @@ impl Bot {
     }
 
     pub fn update(&mut self, _context: &mut Context) -> GameResult<()> {
+        let serialized_state_for_bot = self.serialize_data()?;
+        // let new_location = self.run_bot(serialized_state_for_bot)?;
+        // self.location = new_location;
         self.keep_in_arena();
         Ok(())
     }
@@ -61,6 +64,12 @@ impl Bot {
         } else if (self.location.x + self.radius) > self.arena_width {
             self.location.x = self.arena_width - self.radius;
         }
+    }
+
+    fn serialize_data(&self) -> Result<String, serde_json::Error> {
+        let result = serde_json::to_string(self)?;
+
+        Ok(result)
     }
 }
 
@@ -117,4 +126,13 @@ fn save_to_file_test() {
     file.read_to_string(&mut file_contents).unwrap();
 
     assert_eq!(file_contents, "meow");
+}
+
+#[test]
+fn serialize_state() {
+    let bot = Bot::new(100.0, 100.0);
+    let serialized_data = bot.serialize_data().unwrap();
+    let json = "{\"location\":{\"x\":50.0,\"y\":50.0},\"radius\":25.0,\"arena_width\":100.0,\"arena_height\":100.0}";
+
+    assert_eq!(serialized_data, json);
 }
