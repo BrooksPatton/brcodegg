@@ -2,6 +2,7 @@ extern crate ggez;
 
 use std::ops::AddAssign;
 use ggez::graphics::Point2 as GPoint2;
+use std::clone::Clone;
 
 pub struct Point {
     pub x: f32,
@@ -25,6 +26,15 @@ impl AddAssign for Point {
     fn add_assign(&mut self, other_point: Point) {
         self.x += other_point.x;
         self.y += other_point.y;
+    }
+}
+
+impl Clone for Point {
+    fn clone(&self) -> Point {
+        Point {
+            x: self.x,
+            y: self.y
+        }
     }
 }
 
