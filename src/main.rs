@@ -1,8 +1,8 @@
 extern crate brcodegg;
 extern crate ggez;
 
-use brcodegg::{MainState};
-use ggez::{conf, Context, graphics};
+use brcodegg::MainState;
+use ggez::{conf, graphics, Context};
 use std::fs;
 
 fn main() {
@@ -10,7 +10,7 @@ fn main() {
     let configuration = conf::Conf::from_toml_file(&mut conf_file).unwrap();
     let context = &mut Context::load_from_conf("brcodegg", "Brookzerker", configuration).unwrap();
     let (width, height) = graphics::get_size(context);
-    let num_bots_to_create = 1;
+    let num_bots_to_create = 25;
     let main_state = &mut MainState::new(width as f32, height as f32, num_bots_to_create);
 
     ggez::event::run(context, main_state).unwrap();

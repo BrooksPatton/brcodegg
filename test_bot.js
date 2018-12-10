@@ -5,7 +5,7 @@ const newLocation = {
     y: gameState.location.y
 }
 
-newLocation.x++;
-newLocation.y++;
+newLocation.x += Math.random() * gameState.radius;
+newLocation.y += Math.random() * gameState.radius;
 
 console.log(JSON.stringify(newLocation))

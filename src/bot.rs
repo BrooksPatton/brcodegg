@@ -24,7 +24,10 @@ pub struct Bot {
 impl Bot {
     pub fn new(arena_width: f32, arena_height: f32) -> Bot {
         let radius = 25.0;
-        let location = Point::new(50.0, 50.0);
+        let mut rng = rand::thread_rng();
+        let x = rng.gen_range(0.0, arena_width);
+        let y = rng.gen_range(0.0, arena_height);
+        let location = Point::new(x, y);
 
         Bot {
             location,
@@ -100,7 +103,7 @@ fn new_bot() {
 
     assert!(bot.location.x >= 0.0 && bot.location.x <= 300.0);
     assert!(bot.location.y >= 0.0 && bot.location.y <= 300.0);
-    assert_eq!(bot.radius, 25.0);
+    assert_eq!(bot.radius, 5.0);
     assert_eq!(bot.arena_width, 300.0);
     assert_eq!(bot.arena_height, 300.0);
 }
@@ -143,9 +146,13 @@ fn save_to_file_test() {
 
 #[test]
 fn serialize_state() {
-    let bot = Bot::new(100.0, 100.0);
+    let mut bot = Bot::new(100.0, 100.0);
+    
+    bot.location.x = 50.0;
+    bot.location.y = 55.0;
+
     let serialized_data = bot.serialize_data().unwrap();
-    let json = "{\"location\":{\"x\":50.0,\"y\":50.0},\"radius\":25.0,\"arena_width\":100.0,\"arena_height\":100.0}";
+    let json = "{\"location\":{\"x\":50.0,\"y\":55.0},\"radius\":5.0,\"arena_width\":100.0,\"arena_height\":100.0}";
 
     assert_eq!(serialized_data, json);
 }
@@ -153,9 +160,12 @@ fn serialize_state() {
 #[test]
 fn run_bot() {
     let bot = Bot::new(100.0, 100.0);
+    let mut expected_point = bot.location.clone();
+
+    expected_point += Point::new(1.0, 1.0);
+
     let serialized_data = bot.serialize_data().unwrap();
     let new_location = bot.run_bot(serialized_data).unwrap();
-    let expected_point = Point::new(51.0, 51.0);
 
     assert_eq!(new_location, expected_point);
 }
