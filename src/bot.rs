@@ -1,24 +1,24 @@
-extern crate serde_json;
 extern crate serde;
+extern crate serde_json;
 
-use ggez::graphics::{DrawMode};
-use ggez::{graphics};
-use ggez::{Context, GameResult};
-use rand::{thread_rng, Rng};
-use point::Point;
-use std::thread;
-use std::process::Command;
-use std::str;
 use bot_move::BotMove;
+use ggez::graphics;
+use ggez::graphics::DrawMode;
+use ggez::{Context, GameResult};
+use point::Point;
+use rand::{thread_rng, Rng};
 use std::fs::File;
 use std::io::{Read, Write};
+use std::process::Command;
+use std::str;
+use std::thread;
 
 #[derive(Serialize, Deserialize)]
 pub struct Bot {
     pub location: Point,
     radius: f32,
     arena_width: f32,
-    arena_height: f32
+    arena_height: f32,
 }
 
 impl Bot {
@@ -33,14 +33,20 @@ impl Bot {
             location,
             radius,
             arena_width,
-            arena_height
+            arena_height,
         }
     }
 
     pub fn draw(&mut self, context: &mut Context) -> GameResult<()> {
         let fill = DrawMode::Fill;
 
-        graphics::circle(context, fill, self.location.get_ggez_point2(), self.radius, 0.1)
+        graphics::circle(
+            context,
+            fill,
+            self.location.get_ggez_point2(),
+            self.radius,
+            0.1,
+        )
     }
 
     pub fn update(&mut self, _context: &mut Context) -> GameResult<()> {
@@ -103,7 +109,7 @@ fn new_bot() {
 
     assert!(bot.location.x >= 0.0 && bot.location.x <= 300.0);
     assert!(bot.location.y >= 0.0 && bot.location.y <= 300.0);
-    assert_eq!(bot.radius, 5.0);
+    assert_eq!(bot.radius, 25.0);
     assert_eq!(bot.arena_width, 300.0);
     assert_eq!(bot.arena_height, 300.0);
 }
@@ -114,7 +120,7 @@ fn move_bot() {
     let distance = Point::new(-50.0, 0.0);
     let x = bot.location.x;
     let y = bot.location.y;
-    
+
     bot.move_bot(distance);
     assert_eq!(x - 50.0, bot.location.x);
     assert_eq!(y, bot.location.y);
@@ -124,7 +130,7 @@ fn move_bot() {
 fn keep_in_arena() {
     let mut bot = Bot::new(300.0, 300.0);
     let distance_to_move = Point::new(500.0, 0.0);
-    
+
     bot.move_bot(distance_to_move);
     bot.keep_in_arena();
     assert_eq!(bot.location.x, 300.0 - bot.radius);
@@ -147,12 +153,12 @@ fn save_to_file_test() {
 #[test]
 fn serialize_state() {
     let mut bot = Bot::new(100.0, 100.0);
-    
+
     bot.location.x = 50.0;
     bot.location.y = 55.0;
 
     let serialized_data = bot.serialize_data().unwrap();
-    let json = "{\"location\":{\"x\":50.0,\"y\":55.0},\"radius\":5.0,\"arena_width\":100.0,\"arena_height\":100.0}";
+    let json = "{\"location\":{\"x\":50.0,\"y\":55.0},\"radius\":25.0,\"arena_width\":100.0,\"arena_height\":100.0}";
 
     assert_eq!(serialized_data, json);
 }

@@ -1,22 +1,19 @@
 extern crate ggez;
 
-use std::ops::AddAssign;
 use ggez::graphics::Point2 as GPoint2;
 use std::clone::Clone;
 use std::cmp::PartialEq;
+use std::ops::AddAssign;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Point {
     pub x: f32,
-    pub y: f32
+    pub y: f32,
 }
 
 impl Point {
     pub fn new(x: f32, y: f32) -> Point {
-        Point {
-            x,
-            y
-        }
+        Point { x, y }
     }
 
     pub fn get_ggez_point2(&self) -> GPoint2 {
@@ -35,7 +32,7 @@ impl Clone for Point {
     fn clone(&self) -> Point {
         Point {
             x: self.x,
-            y: self.y
+            y: self.y,
         }
     }
 }
@@ -74,4 +71,20 @@ fn get_ggez_point2() {
     let ggez_point2 = GPoint2::new(1.0, 2.0);
 
     assert_eq!(point.get_ggez_point2(), ggez_point2);
+}
+
+#[test]
+fn clone() {
+    let point_1 = Point::new(1.0, 2.0);
+    let cloned_point = point_1.clone();
+
+    assert_eq!(point_1, cloned_point);
+}
+
+#[test]
+fn partial_eq() {
+    let point_1 = Point::new(1.0, 2.0);
+    let point_2 = Point::new(1.0, 2.0);
+
+    assert_eq!(point_1, point_2);
 }

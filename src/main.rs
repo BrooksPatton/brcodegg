@@ -11,7 +11,9 @@ fn main() {
     let context = &mut Context::load_from_conf("brcodegg", "Brookzerker", configuration).unwrap();
     let (width, height) = graphics::get_size(context);
     let num_bots_to_create = 25;
-    let main_state = &mut MainState::new(width as f32, height as f32, num_bots_to_create);
+    let grid_cells = 25.0;
+    let main_state =
+        &mut MainState::new(width as f32, height as f32, num_bots_to_create, grid_cells);
 
     ggez::event::run(context, main_state).unwrap();
 }
