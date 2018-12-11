@@ -7,6 +7,7 @@ extern crate serde_derive;
 mod bot;
 mod bot_move;
 mod point;
+mod game_grid;
 
 use bot::Bot;
 use ggez::event::EventHandler;
@@ -89,10 +90,8 @@ impl EventHandler for MainState {
 #[test]
 fn main_state_new() {
     let main_state = MainState::new(55.0, 42.0, 5, 25.0);
-    let grid_cell_size = Point::new(2.2, 1.68);
 
     assert_eq!(main_state.width, 55.0);
     assert_eq!(main_state.height, 42.0);
     assert_eq!(main_state.bots.len(), 5);
-    assert_eq!(main_state.grid_cell_size, grid_cell_size);
 }
