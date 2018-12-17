@@ -1,10 +1,10 @@
 extern crate serde;
 extern crate serde_json;
 
+use crate::point::Point;
 use ggez::graphics;
 use ggez::graphics::DrawMode;
 use ggez::{Context, GameResult};
-use point::Point;
 use std::fs::File;
 use std::io::Write;
 use std::process::Command;

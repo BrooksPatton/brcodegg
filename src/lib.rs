@@ -9,10 +9,10 @@ mod bot_move;
 mod game_grid;
 mod point;
 
-use bot::Bot;
+use crate::bot::Bot;
+use crate::point::Point;
 use ggez::event::EventHandler;
 use ggez::{graphics, Context, GameResult};
-use point::Point;
 
 pub struct MainState {
     pub width: u16,
