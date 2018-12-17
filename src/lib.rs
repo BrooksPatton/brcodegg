@@ -6,8 +6,8 @@ extern crate serde_derive;
 
 mod bot;
 mod bot_move;
-mod point;
 mod game_grid;
+mod point;
 
 use bot::Bot;
 use ggez::event::EventHandler;
@@ -15,14 +15,14 @@ use ggez::{graphics, Context, GameResult};
 use point::Point;
 
 pub struct MainState {
-    pub width: f32,
-    pub height: f32,
+    pub width: u16,
+    pub height: u16,
     pub bots: Vec<Bot>,
-    grid_cell_size: Point,
+    grid_cell_size: Point<u16>,
 }
 
 impl MainState {
-    pub fn new(width: f32, height: f32, bots_to_create: u8, grid_cells_count: f32) -> MainState {
+    pub fn new(width: u16, height: u16, bots_to_create: u8, grid_cells_count: u16) -> MainState {
         let mut bots = Vec::new();
 
         for _ in 0..bots_to_create {
@@ -55,30 +55,8 @@ impl EventHandler for MainState {
     fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
         graphics::clear(ctx);
 
-        // for bot in &mut self.bots {
-        //     bot.draw(ctx)?;
-        // }
-
-        let mut start_grid = 0.0;
-        while start_grid < self.width {
-            let lines = [
-                Point::new(start_grid, 0.0).get_ggez_point2(),
-                Point::new(start_grid, self.height).get_ggez_point2(),
-            ];
-
-            graphics::line(ctx, &lines, 1.0)?;
-            start_grid += self.grid_cell_size.x;
-        }
-
-        let mut start_grid = 0.0;
-        while start_grid < self.height {
-            let lines = [
-                Point::new(0.0, start_grid).get_ggez_point2(),
-                Point::new(self.width, start_grid).get_ggez_point2(),
-            ];
-
-            graphics::line(ctx, &lines, 1.0)?;
-            start_grid += self.grid_cell_size.y;
+        for bot in &mut self.bots {
+            bot.draw(ctx)?;
         }
 
         graphics::present(ctx);
@@ -89,9 +67,9 @@ impl EventHandler for MainState {
 #[cfg(test)]
 #[test]
 fn main_state_new() {
-    let main_state = MainState::new(55.0, 42.0, 5, 25.0);
+    let main_state = MainState::new(55, 42, 5, 25);
 
-    assert_eq!(main_state.width, 55.0);
-    assert_eq!(main_state.height, 42.0);
+    assert_eq!(main_state.width, 55);
+    assert_eq!(main_state.height, 42);
     assert_eq!(main_state.bots.len(), 5);
 }
