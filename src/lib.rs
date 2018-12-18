@@ -10,6 +10,7 @@ mod game_grid;
 mod point;
 
 use crate::bot::Bot;
+use crate::game_grid::GameGrid;
 use crate::point::Point;
 use ggez::event::EventHandler;
 use ggez::{graphics, Context, GameResult};
@@ -18,7 +19,7 @@ pub struct MainState {
     pub width: u16,
     pub height: u16,
     pub bots: Vec<Bot>,
-    grid_cell_size: Point<u16>,
+    game_grid: GameGrid,
 }
 
 impl MainState {
@@ -31,15 +32,34 @@ impl MainState {
             bots.push(bot);
         }
 
-        let grid_cell_size_x = width / grid_cells_count;
-        let grid_cell_size_y = height / grid_cells_count;
-
         MainState {
             width,
             height,
             bots,
-            grid_cell_size: Point::new(grid_cell_size_x, grid_cell_size_y),
+            game_grid: GameGrid::new(grid_cells_count, grid_cells_count),
         }
+    }
+
+    fn draw_grid(&self, context: &mut Context) -> GameResult<()> {
+        let spacing_width = self.game_grid.width / self.width;
+
+        for x in &self.game_grid.grid[0] {
+            let mut start = x.coordinates.clone();
+            let mut end = Point::new(x.coordinates.x, self.height);
+
+            println!("{}, {}", start.x, end.x);
+
+            start.x *= spacing_width;
+            end.x *= spacing_width;
+
+            println!("{}, {}", start.x, end.x);
+
+            let points = [start.to_ggez_point2(), end.to_ggez_point2()];
+
+            graphics::line(context, &points, 1.0)?;
+        }
+
+        Ok(())
     }
 }
 
@@ -55,9 +75,11 @@ impl EventHandler for MainState {
     fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
         graphics::clear(ctx);
 
-        for bot in &mut self.bots {
-            bot.draw(ctx)?;
-        }
+        // for bot in &mut self.bots {
+        //     bot.draw(ctx)?;
+        // }
+
+        self.draw_grid(ctx)?;
 
         graphics::present(ctx);
         Ok(())
@@ -72,4 +94,6 @@ fn main_state_new() {
     assert_eq!(main_state.width, 55);
     assert_eq!(main_state.height, 42);
     assert_eq!(main_state.bots.len(), 5);
+    assert_eq!(main_state.game_grid.height, 25);
+    assert_eq!(main_state.game_grid.width, 25);
 }

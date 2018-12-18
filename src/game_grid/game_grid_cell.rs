@@ -1,13 +1,14 @@
 use crate::game_grid::piece::Piece;
 use crate::point::Point;
 
-struct GameGridCell {
-    coordinates: Point<u16>,
+#[derive(PartialEq, Debug)]
+pub struct GameGridCell {
+    pub coordinates: Point<u16>,
     contains: Piece,
 }
 
 impl GameGridCell {
-    fn new(x: u16, y: u16) -> GameGridCell {
+    pub fn new(x: u16, y: u16) -> GameGridCell {
         GameGridCell {
             coordinates: Point::new(x, y),
             contains: Piece::empty,
