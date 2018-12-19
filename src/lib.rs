@@ -41,18 +41,26 @@ impl MainState {
     }
 
     fn draw_grid(&self, context: &mut Context) -> GameResult<()> {
-        let spacing_width = self.game_grid.width / self.width;
+        let spacing_width = 36;
 
         for x in &self.game_grid.grid[0] {
             let mut start = x.coordinates.clone();
             let mut end = Point::new(x.coordinates.x, self.height);
 
-            println!("{}, {}", start.x, end.x);
-
             start.x *= spacing_width;
             end.x *= spacing_width;
 
-            println!("{}, {}", start.x, end.x);
+            let points = [start.to_ggez_point2(), end.to_ggez_point2()];
+
+            graphics::line(context, &points, 1.0)?;
+        }
+
+        for y in &self.game_grid.grid {
+            let mut start = y[0].coordinates.clone();
+            let mut end = Point::new(self.width, y[0].coordinates.y);
+
+            start.y *= spacing_width;
+            end.y *= spacing_width;
 
             let points = [start.to_ggez_point2(), end.to_ggez_point2()];
 
