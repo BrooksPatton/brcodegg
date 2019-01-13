@@ -15,15 +15,28 @@ use crate::point::Point;
 use ggez::event::EventHandler;
 use ggez::{graphics, Context, GameResult};
 
+#[derive(PartialEq, Debug)]
+pub enum BotLocation {
+    Local(String),
+    Url(String),
+}
+
 pub struct MainState {
     pub width: u16,
     pub height: u16,
     pub bots: Vec<Bot>,
     game_grid: GameGrid,
+    bot_locations: Vec<BotLocation>,
 }
 
 impl MainState {
-    pub fn new(width: u16, height: u16, bots_to_create: u8, grid_cells_count: u16) -> MainState {
+    pub fn new(
+        width: u16,
+        height: u16,
+        bots_to_create: u8,
+        grid_cells_count: u16,
+        bot_locations: Vec<BotLocation>,
+    ) -> MainState {
         let mut bots = Vec::new();
 
         for _ in 0..bots_to_create {
@@ -37,6 +50,7 @@ impl MainState {
             height,
             bots,
             game_grid: GameGrid::new(grid_cells_count, grid_cells_count),
+            bot_locations,
         }
     }
 
@@ -97,11 +111,18 @@ impl EventHandler for MainState {
 #[cfg(test)]
 #[test]
 fn main_state_new() {
-    let main_state = MainState::new(55, 42, 5, 25);
+    let bot_locations = vec![BotLocation::Local(String::from(
+        "this_will_be_a_filename.js",
+    ))];
+    let main_state = MainState::new(55, 42, 5, 25, bot_locations);
 
     assert_eq!(main_state.width, 55);
     assert_eq!(main_state.height, 42);
     assert_eq!(main_state.bots.len(), 5);
     assert_eq!(main_state.game_grid.height, 25);
     assert_eq!(main_state.game_grid.width, 25);
+    assert_eq!(
+        main_state.bot_locations[0],
+        BotLocation::Local("this_will_be_a_filename.js".into())
+    );
 }

@@ -1,8 +1,9 @@
 extern crate brcodegg;
 extern crate ggez;
 
+use crate::brcodegg::BotLocation;
 use brcodegg::MainState;
-use ggez::{conf, graphics, Context};
+use ggez::{conf, Context};
 use std::fs;
 
 // Cannot be above 32767 due to us using u16 everywhere
@@ -21,8 +22,16 @@ fn main() {
     let context = &mut Context::load_from_conf("brcodegg", "Brookzerker", configuration).unwrap();
     let num_bots_to_create = 1;
     let grid_cells = 25;
-    let main_state =
-        &mut MainState::new(WINDOW_WIDTH, WINDOW_HEIGHT, num_bots_to_create, grid_cells);
+    let bot_locations = vec![BotLocation::Local(
+        "bot_examples/chooses_start_location".into(),
+    )];
+    let main_state = &mut MainState::new(
+        WINDOW_WIDTH,
+        WINDOW_HEIGHT,
+        num_bots_to_create,
+        grid_cells,
+        bot_locations,
+    );
 
     ggez::event::run(context, main_state).unwrap();
 }
