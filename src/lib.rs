@@ -37,10 +37,11 @@ impl MainState {
         grid_cells_count: u16,
         bot_locations: Vec<BotLocation>,
     ) -> MainState {
+        let game_grid = GameGrid::new(grid_cells_count, grid_cells_count);
         let mut bots = Vec::new();
 
         for _ in 0..bots_to_create {
-            let bot = Bot::new(width, height);
+            let bot = Bot::new(game_grid.width, game_grid.height);
 
             bots.push(bot);
         }
@@ -49,36 +50,27 @@ impl MainState {
             width,
             height,
             bots,
-            game_grid: GameGrid::new(grid_cells_count, grid_cells_count),
+            game_grid,
             bot_locations,
         }
     }
 
     fn draw_grid(&self, context: &mut Context) -> GameResult<()> {
-        let spacing_width = 36;
+        let cell_width = self.width / self.game_grid.width;
+        let cell_height = self.height / self.game_grid.height;
+        
+        for count in 0..self.game_grid.width {
+            let start = Point::new(cell_width * count, 0).to_ggez_point2();
+            let end = Point::new(cell_width * count, self.height).to_ggez_point2();
 
-        for x in &self.game_grid.grid[0] {
-            let mut start = x.coordinates.clone();
-            let mut end = Point::new(x.coordinates.x, self.height);
-
-            start.x *= spacing_width;
-            end.x *= spacing_width;
-
-            let points = [start.to_ggez_point2(), end.to_ggez_point2()];
-
-            graphics::line(context, &points, 1.0)?;
+            graphics::line(context, &[start, end], 1.0)?;
         }
 
-        for y in &self.game_grid.grid {
-            let mut start = y[0].coordinates.clone();
-            let mut end = Point::new(self.width, y[0].coordinates.y);
+        for count in 0..self.game_grid.height {
+            let start = Point::new(0, cell_height * count).to_ggez_point2();
+            let end = Point::new(self.width, cell_height * count).to_ggez_point2();
 
-            start.y *= spacing_width;
-            end.y *= spacing_width;
-
-            let points = [start.to_ggez_point2(), end.to_ggez_point2()];
-
-            graphics::line(context, &points, 1.0)?;
+            graphics::line(context, &[start, end], 1.0)?;
         }
 
         Ok(())
@@ -89,6 +81,7 @@ impl EventHandler for MainState {
     fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
         for bot in &mut self.bots {
             bot.update(ctx)?;
+            //update the grid with what the bot did
         }
 
         Ok(())
@@ -96,10 +89,6 @@ impl EventHandler for MainState {
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
         graphics::clear(ctx);
-
-        // for bot in &mut self.bots {
-        //     bot.draw(ctx)?;
-        // }
 
         self.draw_grid(ctx)?;
 

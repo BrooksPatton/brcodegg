@@ -21,7 +21,7 @@ fn main() {
 
     let context = &mut Context::load_from_conf("brcodegg", "Brookzerker", configuration).unwrap();
     let num_bots_to_create = 1;
-    let grid_cells = 25;
+    let grid_cells = 7;
     let bot_locations = vec![BotLocation::Local(
         "bot_examples/chooses_start_location".into(),
     )];

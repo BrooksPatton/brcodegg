@@ -5,7 +5,4 @@ const newLocation = {
   y: gameState.location.y
 };
 
-newLocation.x += 1;
-newLocation.y += 1;
-
 console.log(JSON.stringify(newLocation));
