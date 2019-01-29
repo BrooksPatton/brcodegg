@@ -1,7 +1,7 @@
 extern crate brcodegg;
 extern crate ggez;
 
-use crate::brcodegg::BotLocation;
+use crate::brcodegg::BotFileName;
 use brcodegg::MainState;
 use ggez::{conf, Context};
 use std::fs;
@@ -20,15 +20,13 @@ fn main() {
         .dimensions(WINDOW_WIDTH.into(), WINDOW_HEIGHT.into());
 
     let context = &mut Context::load_from_conf("brcodegg", "Brookzerker", configuration).unwrap();
-    let num_bots_to_create = 1;
     let grid_cells = 7;
-    let bot_locations = vec![BotLocation::Local(
-        "bot_examples/chooses_start_location".into(),
+    let bot_locations = vec![BotFileName::Local(
+        "bot_examples/chooses_start_location.js".into(),
     )];
     let main_state = &mut MainState::new(
         WINDOW_WIDTH,
         WINDOW_HEIGHT,
-        num_bots_to_create,
         grid_cells,
         bot_locations,
     );

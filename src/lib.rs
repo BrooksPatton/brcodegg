@@ -16,7 +16,7 @@ use ggez::event::EventHandler;
 use ggez::{graphics, Context, GameResult};
 
 #[derive(PartialEq, Debug)]
-pub enum BotLocation {
+pub enum BotFileName {
     Local(String),
     Url(String),
 }
@@ -26,22 +26,25 @@ pub struct MainState {
     pub height: u16,
     pub bots: Vec<Bot>,
     game_grid: GameGrid,
-    bot_locations: Vec<BotLocation>,
+    turn_number: u32
 }
 
 impl MainState {
     pub fn new(
         width: u16,
         height: u16,
-        bots_to_create: u8,
         grid_cells_count: u16,
-        bot_locations: Vec<BotLocation>,
+        bot_file_names: Vec<BotFileName>,
     ) -> MainState {
         let game_grid = GameGrid::new(grid_cells_count, grid_cells_count);
         let mut bots = Vec::new();
+        let turn_number = 0;
 
-        for _ in 0..bots_to_create {
-            let bot = Bot::new(game_grid.width, game_grid.height);
+        for bot_file_name in bot_file_names {
+            let bot = match bot_file_name {
+                BotFileName::Local(_path) => Bot::new(game_grid.width, game_grid.height),
+                BotFileName::Url(_url) => Bot::new(game_grid.width, game_grid.height)
+            };
 
             bots.push(bot);
         }
@@ -51,7 +54,7 @@ impl MainState {
             height,
             bots,
             game_grid,
-            bot_locations,
+            turn_number
         }
     }
 
@@ -78,10 +81,10 @@ impl MainState {
 }
 
 impl EventHandler for MainState {
-    fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
+    fn update(&mut self, _context: &mut Context) -> GameResult<()> {
         for bot in &mut self.bots {
-            bot.update(ctx)?;
-            //update the grid with what the bot did
+            bot.update(self.turn_number)?;
+            // if turn is 0 and bot gets to choose its own starting position
         }
 
         Ok(())
@@ -100,18 +103,15 @@ impl EventHandler for MainState {
 #[cfg(test)]
 #[test]
 fn main_state_new() {
-    let bot_locations = vec![BotLocation::Local(String::from(
+    let bot_locations = vec![BotFileName::Local(String::from(
         "this_will_be_a_filename.js",
     ))];
-    let main_state = MainState::new(55, 42, 5, 25, bot_locations);
+    let main_state = MainState::new(55, 42, 5, bot_locations);
 
     assert_eq!(main_state.width, 55);
     assert_eq!(main_state.height, 42);
     assert_eq!(main_state.bots.len(), 5);
     assert_eq!(main_state.game_grid.height, 25);
     assert_eq!(main_state.game_grid.width, 25);
-    assert_eq!(
-        main_state.bot_locations[0],
-        BotLocation::Local("this_will_be_a_filename.js".into())
-    );
+    assert_eq!(main_state.turn_number, 0);
 }

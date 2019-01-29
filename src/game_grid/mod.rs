@@ -1,8 +1,7 @@
-mod game_grid_cell;
 mod piece;
 
 use std::collections::HashMap;
-use crate::game_grid::game_grid_cell::GameGridCell;
+use crate::Point;
 
 pub struct GameGrid {
     pub grid: HashMap<String, GameGridCell>,
@@ -12,7 +11,7 @@ pub struct GameGrid {
 
 impl GameGrid {
     pub fn new(width: u16, height: u16) -> GameGrid {
-        let mut grid = HashMap::new();
+        let grid = HashMap::new();
 
         GameGrid {
             grid,
@@ -33,4 +32,14 @@ fn grid_new() {
     assert_eq!(game_grid.grid, empty_grid);
     assert_eq!(game_grid.width, 2);
     assert_eq!(game_grid.height, 2);
+}
+
+#[test]
+fn place_bot_on_grid() {
+    let game_grid = GameGrid::new(2, 2);
+    let bot_index = 0;
+    let bot_location = Point::new(1, 1);
+
+    game_grid.place_bot(bot_index, bot_location);
+    // TODO: finish creating the place bot on grid function (may need a cell piece structure)
 }

@@ -1,4 +1,4 @@
 #[derive(PartialEq, Debug)]
 pub enum Piece {
-    empty,
+    bot_index(u16)
 }

@@ -11,7 +11,8 @@ use std::process::Command;
 pub struct Bot {
     pub location: Point<u16>,
     game_grid_width: u16,
-    game_grid_height: u16
+    game_grid_height: u16,
+    turn_number: u32
 }
 
 impl Bot {
@@ -19,15 +20,18 @@ impl Bot {
         let x = 3;
         let y = 3;
         let location = Point::<u16>::new(x, y);
+        let turn_number = 0;
 
         Bot {
             location,
             game_grid_width,
-            game_grid_height
+            game_grid_height,
+            turn_number
         }
     }
 
-    pub fn update(&mut self, _context: &mut Context) -> GameResult<()> {
+    pub fn update(&mut self, new_turn_number: u32) -> GameResult<()> {
+        self.turn_number = new_turn_number;
         let serialized_state_for_bot = self.serialize_data().unwrap();
         let new_location = self.run_bot(serialized_state_for_bot).unwrap();
 
@@ -44,7 +48,7 @@ impl Bot {
     fn run_bot(&self, json: String) -> Result<Point<u16>, serde_json::Error> {
         let result = Command::new("sh")
             .arg("-c")
-            .arg(format!("node test_bot.js '{}'", json))
+            .arg(format!("node bot_examples/chooses_start_location.js '{}'", json))
             .output()
             .expect("Error running Node bot");
 
@@ -70,6 +74,7 @@ fn new_bot() {
     assert!(bot.location.y == 3);
     assert_eq!(bot.game_grid_width, 300);
     assert_eq!(bot.game_grid_height, 300);
+    assert_eq!(bot.turn_number, 0);
 }
 
 #[test]
@@ -81,7 +86,7 @@ fn serialize_state() {
 
     let serialized_data = bot.serialize_data().unwrap();
     let json =
-        "{\"location\":{\"x\":50,\"y\":55},\"game_grid_width\":100,\"game_grid_height\":100}";
+        "{\"location\":{\"x\":50,\"y\":55},\"game_grid_width\":100,\"game_grid_height\":100,\"turn_number\":0}";
 
     assert_eq!(serialized_data, json);
 }
@@ -89,10 +94,11 @@ fn serialize_state() {
 #[test]
 fn run_bot() {
     let bot = Bot::new(100, 100);
-    let expected_point = bot.location.clone();
+    let expected_point = Point::new(5, 5);
 
     let serialized_data = bot.serialize_data().unwrap();
     let new_location = bot.run_bot(serialized_data).unwrap();
 
     assert_eq!(new_location, expected_point);
+    assert_eq!(bot.turn_number, 0);
 }
