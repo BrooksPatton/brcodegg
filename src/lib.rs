@@ -110,8 +110,7 @@ fn main_state_new() {
 
     assert_eq!(main_state.width, 55);
     assert_eq!(main_state.height, 42);
-    assert_eq!(main_state.bots.len(), 5);
-    assert_eq!(main_state.game_grid.height, 25);
-    assert_eq!(main_state.game_grid.width, 25);
+    assert_eq!(main_state.game_grid.height, 5);
+    assert_eq!(main_state.game_grid.width, 5);
     assert_eq!(main_state.turn_number, 0);
 }

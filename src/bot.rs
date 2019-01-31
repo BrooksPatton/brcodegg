@@ -9,7 +9,7 @@ use std::process::Command;
 
 #[derive(Serialize, Deserialize)]
 pub struct Bot {
-    pub location: Point<u16>,
+    pub location: Point,
     game_grid_width: u16,
     game_grid_height: u16,
     turn_number: u32
@@ -19,7 +19,7 @@ impl Bot {
     pub fn new(game_grid_width: u16, game_grid_height: u16) -> Bot {
         let x = 3;
         let y = 3;
-        let location = Point::<u16>::new(x, y);
+        let location = Point::new(x, y);
         let turn_number = 0;
 
         Bot {
@@ -45,14 +45,14 @@ impl Bot {
         Ok(result)
     }
 
-    fn run_bot(&self, json: String) -> Result<Point<u16>, serde_json::Error> {
+    fn run_bot(&self, json: String) -> Result<Point, serde_json::Error> {
         let result = Command::new("sh")
             .arg("-c")
             .arg(format!("node bot_examples/chooses_start_location.js '{}'", json))
             .output()
             .expect("Error running Node bot");
 
-        let location: Point<u16> = serde_json::from_slice(&result.stdout)?;
+        let location: Point = serde_json::from_slice(&result.stdout)?;
 
         Ok(location)
     }
