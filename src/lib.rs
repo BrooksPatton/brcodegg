@@ -85,6 +85,7 @@ impl EventHandler for MainState {
         for bot in &mut self.bots {
             bot.update(self.turn_number)?;
             // if turn is 0 and bot gets to choose its own starting position
+            // the logic for the turn happens here, as in the bot will choose a location and the library will determine if that move is legal and then use methods on the bot and grid to make the move
         }
 
         Ok(())
