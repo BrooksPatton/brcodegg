@@ -10,7 +10,7 @@ mod game_grid;
 mod point;
 
 use crate::bot::Bot;
-use crate::game_grid::GameGrid;
+use crate::game_grid::{GameGrid, GridError};
 use crate::point::Point;
 use ggez::event::EventHandler;
 use ggez::{graphics, Context, GameResult};
@@ -39,14 +39,16 @@ impl MainState {
         let game_grid = GameGrid::new(grid_cells_count, grid_cells_count);
         let mut bots = Vec::new();
         let turn_number = 0;
+        let mut index = 0;
 
         for bot_file_name in bot_file_names {
             let bot = match bot_file_name {
-                BotFileName::Local(_path) => Bot::new(game_grid.width, game_grid.height),
-                BotFileName::Url(_url) => Bot::new(game_grid.width, game_grid.height)
+                BotFileName::Local(_path) => Bot::new(game_grid.width, game_grid.height, index),
+                BotFileName::Url(_url) => Bot::new(game_grid.width, game_grid.height, index)
             };
 
             bots.push(bot);
+            index += 1;
         }
 
         MainState {
@@ -78,15 +80,26 @@ impl MainState {
 
         Ok(())
     }
+
+    fn draw_bots(&self, context: &mut Context) -> GameResult<()> {
+        // loop through all bots on the grid, and then draw something to represent said bots
+    }
 }
 
 impl EventHandler for MainState {
     fn update(&mut self, _context: &mut Context) -> GameResult<()> {
         for bot in &mut self.bots {
             bot.update(self.turn_number)?;
-            // if turn is 0 and bot gets to choose its own starting position
-            // the logic for the turn happens here, as in the bot will choose a location and the library will determine if that move is legal and then use methods on the bot and grid to make the move
+            if self.turn_number == 0 {
+                match self.game_grid.place_bot(bot.index, bot.location.clone()) {
+                    Err(GridError::bot_exists_in_location) => println!("bot already exists where you are trying to place it"),
+                    Err(GridError::out_of_bounds) => println!("bot attempted to be placed on first turn out of bounds"),
+                    Ok(_) => (),
+                }
+            }
         }
+
+        dbg!(&self.game_grid);
 
         Ok(())
     }
@@ -95,6 +108,7 @@ impl EventHandler for MainState {
         graphics::clear(ctx);
 
         self.draw_grid(ctx)?;
+        self.draw_bots(ctx)?;
 
         graphics::present(ctx);
         Ok(())

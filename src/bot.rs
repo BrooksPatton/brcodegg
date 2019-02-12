@@ -7,16 +7,17 @@ use std::fs::File;
 use std::io::Write;
 use std::process::Command;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Bot {
     pub location: Point,
     game_grid_width: u16,
     game_grid_height: u16,
-    turn_number: u32
+    turn_number: u32,
+    pub index: u16
 }
 
 impl Bot {
-    pub fn new(game_grid_width: u16, game_grid_height: u16) -> Bot {
+    pub fn new(game_grid_width: u16, game_grid_height: u16, index: u16) -> Bot {
         let x = 3;
         let y = 3;
         let location = Point::new(x, y);
@@ -26,7 +27,8 @@ impl Bot {
             location,
             game_grid_width,
             game_grid_height,
-            turn_number
+            turn_number,
+            index
         }
     }
 
@@ -68,32 +70,33 @@ fn _save_to_file(content: String) -> Result<(), std::io::Error> {
 #[cfg(test)]
 #[test]
 fn new_bot() {
-    let bot = Bot::new(300, 300);
+    let bot = Bot::new(300, 300, 0);
 
     assert!(bot.location.x ==3);
     assert!(bot.location.y == 3);
     assert_eq!(bot.game_grid_width, 300);
     assert_eq!(bot.game_grid_height, 300);
     assert_eq!(bot.turn_number, 0);
+    assert_eq!(bot.index, 0);
 }
 
 #[test]
 fn serialize_state() {
-    let mut bot = Bot::new(100, 100);
+    let mut bot = Bot::new(100, 100, 0);
 
     bot.location.x = 50;
     bot.location.y = 55;
 
     let serialized_data = bot.serialize_data().unwrap();
     let json =
-        "{\"location\":{\"x\":50,\"y\":55},\"game_grid_width\":100,\"game_grid_height\":100,\"turn_number\":0}";
+        "{\"location\":{\"x\":50,\"y\":55},\"game_grid_width\":100,\"game_grid_height\":100,\"turn_number\":0,\"index\":0}";
 
     assert_eq!(serialized_data, json);
 }
 
 #[test]
 fn run_bot() {
-    let bot = Bot::new(100, 100);
+    let bot = Bot::new(100, 100, 0);
     let expected_point = Point::new(5, 5);
 
     let serialized_data = bot.serialize_data().unwrap();

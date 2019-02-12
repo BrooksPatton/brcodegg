@@ -4,8 +4,9 @@ mod error;
 use std::collections::HashMap;
 use crate::Point;
 use piece::Piece;
-use error::GridError;
+pub use error::GridError;
 
+#[derive(Debug)]
 pub struct GameGrid {
     pub grid: HashMap<Point, Piece>,
     pub width: u16,
@@ -63,10 +64,9 @@ fn place_first_bot_on_grid() {
     let get_bot_location = bot_location.clone();
     let bot_piece = Piece::bot_index(0);
 
-    game_grid.place_bot(bot_index, bot_location);
+    game_grid.place_bot(bot_index, bot_location).unwrap();
 
     assert_eq!(game_grid.grid.get(&get_bot_location), Some(&bot_piece));
-    // TODO: finish creating the place bot on grid function (may need a cell piece structure)
 }
 
 #[test]
