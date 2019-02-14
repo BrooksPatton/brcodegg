@@ -8,8 +8,8 @@ use std::fs;
 
 // Cannot be above 32767 due to us using u16 everywhere
 // We are using u16 to be able to convert back into f32 when communicating with ggez
-const WINDOW_WIDTH: u16 = 900;
-const WINDOW_HEIGHT: u16 = 500;
+const WINDOW_WIDTH: u16 = 1000;
+const WINDOW_HEIGHT: u16 = 1000;
 
 fn main() {
     let mut conf_file = get_conf_file();

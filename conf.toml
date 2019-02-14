@@ -5,8 +5,8 @@
 # which options there are.
 
 [window_mode]
-width = 900
-height = 500
+width = 1000
+height = 1000
 borderless = false
 fullscreen_type = "Off"
 vsync = false

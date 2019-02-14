@@ -82,7 +82,21 @@ impl MainState {
     }
 
     fn draw_bots(&self, context: &mut Context) -> GameResult<()> {
-        // loop through all bots on the grid, and then draw something to represent said bots
+        let cell_width = self.width / self.game_grid.width;
+        let cell_height = self.height / self.game_grid.height;
+        let cell_size = Point::new(cell_width, cell_height);
+        let bot_size = (cell_size.x / 2).into();
+
+        for bot in &self.bots {
+            let mut start_location = bot.location.multiply(&cell_size);
+
+            start_location.x += cell_size.x / 2;
+            start_location.y += cell_size.y / 2;
+
+            graphics::circle(context, graphics::DrawMode::Fill, start_location.to_ggez_point2(), bot_size, 0.1)?;
+        }
+
+        Ok(())
     }
 }
 
