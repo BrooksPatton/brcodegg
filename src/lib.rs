@@ -81,14 +81,14 @@ impl MainState {
         Ok(())
     }
 
-    fn draw_bots(&self, context: &mut Context) -> GameResult<()> {
+    fn draw_grid_contents(&self, context: &mut Context) -> GameResult<()> {
         let cell_width = self.width / self.game_grid.width;
         let cell_height = self.height / self.game_grid.height;
         let cell_size = Point::new(cell_width, cell_height);
         let bot_size = (cell_size.x / 2).into();
 
-        for bot in &self.bots {
-            let mut start_location = bot.location.multiply(&cell_size);
+        for (location, _bot_index) in self.game_grid.grid.iter() {
+            let mut start_location = location.multiply(&cell_size);
 
             start_location.x += cell_size.x / 2;
             start_location.y += cell_size.y / 2;
@@ -103,18 +103,20 @@ impl MainState {
 impl EventHandler for MainState {
     fn update(&mut self, _context: &mut Context) -> GameResult<()> {
         for bot in &mut self.bots {
-            bot.update(self.turn_number)?;
+            let new_location = bot.update(self.turn_number)?;
+
             if self.turn_number == 0 {
-                match self.game_grid.place_bot(bot.index, bot.location.clone()) {
+                match self.game_grid.place_bot(bot.index, new_location.clone()) {
                     Err(GridError::bot_exists_in_location) => println!("bot already exists where you are trying to place it"),
                     Err(GridError::out_of_bounds) => println!("bot attempted to be placed on first turn out of bounds"),
-                    Ok(_) => (),
+                    Ok(_) => bot.location = new_location,
                 }
             }
         }
 
-        dbg!(&self.game_grid);
+        dbg!(&self.game_grid.grid);
 
+        self.turn_number += 1;
         Ok(())
     }
 
@@ -122,7 +124,7 @@ impl EventHandler for MainState {
         graphics::clear(ctx);
 
         self.draw_grid(ctx)?;
-        self.draw_bots(ctx)?;
+        self.draw_grid_contents(ctx)?;
 
         graphics::present(ctx);
         Ok(())

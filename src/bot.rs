@@ -32,13 +32,11 @@ impl Bot {
         }
     }
 
-    pub fn update(&mut self, new_turn_number: u32) -> GameResult<()> {
+    pub fn update(&mut self, new_turn_number: u32) -> GameResult<Point> {
         self.turn_number = new_turn_number;
         let serialized_state_for_bot = self.serialize_data().unwrap();
-        let new_location = self.run_bot(serialized_state_for_bot).unwrap();
-
-        self.location = new_location;
-        Ok(())
+        
+        Ok(self.run_bot(serialized_state_for_bot).unwrap())
     }
 
     fn serialize_data(&self) -> Result<String, serde_json::Error> {
@@ -104,4 +102,14 @@ fn run_bot() {
 
     assert_eq!(new_location, expected_point);
     assert_eq!(bot.turn_number, 0);
+}
+
+#[test]
+fn update() {
+    let mut bot = Bot::new(100, 100, 0);
+
+    let location = bot.update(0).unwrap();
+    let expected_location = Point::new(5, 5);
+
+    assert_eq!(location, expected_location);
 }

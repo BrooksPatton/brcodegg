@@ -20,7 +20,7 @@ fn main() {
         .dimensions(WINDOW_WIDTH.into(), WINDOW_HEIGHT.into());
 
     let context = &mut Context::load_from_conf("brcodegg", "Brookzerker", configuration).unwrap();
-    let grid_cells = 7;
+    let grid_cells = 50;
     let bot_locations = vec![BotFileName::Local(
         "bot_examples/chooses_start_location.js".into(),
     )];

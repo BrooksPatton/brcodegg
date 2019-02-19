@@ -31,7 +31,7 @@ impl GameGrid {
             return Err(GridError::out_of_bounds);
         }
 
-        match self.grid.get(&bot_location) {
+        match self.check_location_for_bot(&bot_location) {
             Some(cell) => match cell {
                 Piece::bot_index(_) => Err(GridError::bot_exists_in_location)
             },
@@ -40,6 +40,15 @@ impl GameGrid {
                 Ok(())
             }
         }
+    }
+
+    // pub fn move_bot(&mut self, bot_index: u16, new_location: Point) -> Result<(), GridError> {
+    //     // is there a bot in the new location?
+    //     // 
+    // }
+
+    fn check_location_for_bot(&self, location: &Point) -> Option<&Piece> {
+        self.grid.get(&location)
     }
 }
 
@@ -89,4 +98,33 @@ fn place_bot_on_top_of_other_bot() {
         Err(error) => assert_eq!(error, GridError::bot_exists_in_location),
         _ => panic!("should have errored with bot exists in another location")
     };
+}
+
+#[test]
+fn check_location_for_bot() {
+    let mut game_grid = GameGrid::new(5, 5);
+    let bot_location = Point::new(2, 2);
+    let empty_location = Point::new(1, 1);
+
+    game_grid.place_bot(0, bot_location.clone()).unwrap();
+
+    let bot_should_be_found = game_grid.check_location_for_bot(&bot_location);
+    let bot_should_not_be_found = game_grid.check_location_for_bot(&empty_location);
+
+    assert_eq!(bot_should_be_found, Some(&Piece::bot_index(0)));
+    assert_eq!(bot_should_not_be_found, None);
+}
+
+#[test]
+fn move_bot_to_empty_cell() {
+    let mut game_grid = GameGrid::new(50, 50);
+    let bot_location = Point::new(2, 2);
+    let target_location = Point::new(3, 2);
+    let bot_index = 0;
+
+    game_grid.place_bot(bot_index, bot_location).unwrap();
+    game_grid.move_bot(bot_index, target_location).unwrap();
+
+    assert_eq!(game_grid.check_location_for_bot(&bot_location), None);
+    assert_eq!(game_grid.check_location_for_bot(&target_location), Some(&Piece::bot_index(bot_index)));
 }
