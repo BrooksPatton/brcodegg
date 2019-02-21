@@ -42,12 +42,16 @@ impl GameGrid {
         }
     }
 
-    // pub fn move_bot(&mut self, bot_index: u16, new_location: Point) -> Result<(), GridError> {
-    //     // is there a bot in the new location?
-    //     // 
-    // }
+    pub fn move_piece_on_grid(&mut self, current_location: &Point, new_location: Point) -> Result<(), GridError> {
+        if let Some(piece) = self.grid.remove(&current_location) {
+            self.grid.insert(new_location, piece);
+            Ok(())
+        } else {
+            Err(GridError::nothing_in_cell)
+        }
+    }
 
-    fn check_location_for_bot(&self, location: &Point) -> Option<&Piece> {
+    pub fn check_location_for_bot(&self, location: &Point) -> Option<&Piece> {
         self.grid.get(&location)
     }
 }
@@ -122,8 +126,8 @@ fn move_bot_to_empty_cell() {
     let target_location = Point::new(3, 2);
     let bot_index = 0;
 
-    game_grid.place_bot(bot_index, bot_location).unwrap();
-    game_grid.move_bot(bot_index, target_location).unwrap();
+    game_grid.place_bot(bot_index, bot_location.clone()).unwrap();
+    game_grid.move_piece_on_grid(&bot_location, target_location.clone()).unwrap();
 
     assert_eq!(game_grid.check_location_for_bot(&bot_location), None);
     assert_eq!(game_grid.check_location_for_bot(&target_location), Some(&Piece::bot_index(bot_index)));

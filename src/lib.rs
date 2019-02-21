@@ -110,6 +110,14 @@ impl EventHandler for MainState {
                     Err(GridError::bot_exists_in_location) => println!("bot already exists where you are trying to place it"),
                     Err(GridError::out_of_bounds) => println!("bot attempted to be placed on first turn out of bounds"),
                     Ok(_) => bot.location = new_location,
+                    _ => (),
+                }
+            } else {
+                if let Some(_piece) = self.game_grid.check_location_for_bot(&new_location) {
+                    println!("Bot {} attempted to move into another bot", bot.index);
+                } else {
+                    self.game_grid.move_piece_on_grid(&bot.location, new_location.clone()).unwrap();
+                    bot.location = new_location;
                 }
             }
         }
